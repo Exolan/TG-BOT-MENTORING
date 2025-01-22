@@ -4,7 +4,14 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums.parse_mode import ParseMode
 from database import Database
 from config import BOT_TOKEN, DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER
-from handlers import setup_handlers
+
+from handlers.start import start_router
+from handlers.help import help_router
+from handlers.category import category_router
+from handlers.back import back_router
+from handlers.theme import theme_router
+
+from middleware import DatabaseMiddleware, BotMiddleware
 
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
@@ -25,9 +32,15 @@ async def main():
     try:
         await db.connect()
 
-        dp.db = db
+        dp.update.middleware(DatabaseMiddleware(db))
+        dp.update.middleware(BotMiddleware(bot))
         
-        setup_handlers(dp)
+        dp.include_router(start_router)
+        dp.include_router(help_router)
+        dp.include_router(category_router)
+        dp.include_router(back_router)
+        dp.include_router(theme_router)
+        
         print("Бот запущен")
         await dp.start_polling(bot)
     finally:
