@@ -3,7 +3,6 @@ from aiogram.types import Message
 from aiogram.filters import Command
 from keyboards import main_keyboard
 from database import Database
-from utils import delete_old_mes
 
 help_router = Router()
 

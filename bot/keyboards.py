@@ -25,7 +25,7 @@ def back_buttons(callback_data: str = None):
 
     return InlineKeyboardMarkup(inline_keyboard=[buttons])
 
-def select_buttons(list: list, isTheme: bool):
+def select_buttons(list: list, isTheme: bool, pervios_callback: str = None):
     buttons = []
 
     if list:
@@ -42,6 +42,13 @@ def select_buttons(list: list, isTheme: bool):
 
                 buttons.append([InlineKeyboardButton(text=element_name, callback_data=f'select_subtheme_{element_id}')])
     
-    buttons.append([InlineKeyboardButton(text="Назад", callback_data='back')])
+    back_buttons = []
+
+    if pervios_callback:
+        back_buttons.append(InlineKeyboardButton(text="Назад", callback_data=pervios_callback))
+    back_buttons.append(InlineKeyboardButton(text="Главное меню", callback_data='menu'))
+    
+
+    buttons.append(back_buttons)
     
     return InlineKeyboardMarkup(inline_keyboard=buttons)
