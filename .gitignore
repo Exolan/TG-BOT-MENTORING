@@ -1,4 +1,7 @@
 venv/
 .env
+*.doc
+*.docx
 *.pyc
 __pycache__/
+config.py

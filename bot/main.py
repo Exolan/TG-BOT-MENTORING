@@ -11,6 +11,7 @@ from handlers.category import category_router
 from handlers.back import menu_router
 from handlers.theme import theme_router
 from handlers.subtheme import subtheme_router
+from handlers.search import search_router
 
 from middleware import DatabaseMiddleware, BotMiddleware
 
@@ -42,6 +43,7 @@ async def main():
         dp.include_router(menu_router)
         dp.include_router(theme_router)
         dp.include_router(subtheme_router)
+        dp.include_router(search_router)
         
         print("Бот запущен")
         await dp.start_polling(bot)
