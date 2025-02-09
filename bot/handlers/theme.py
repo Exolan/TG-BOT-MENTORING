@@ -33,11 +33,23 @@ async def select_theme(call: CallbackQuery, state: FSMContext, db: Database):
 
     pervios_callback = "select_category_" + data.get('select_category')
 
-    if theme_text:
-        await call.message.answer(f"<b>{theme_name}</b>\n\n{theme_text}", reply_markup=select_buttons(subtheme, False, pervios_callback))
-
-    if theme_file_url:
-        await create_file(call.message, theme_file_url, pervios_callback)
-
     if subtheme:
         await call.message.answer("Выберите подтему", reply_markup=select_buttons(subtheme, False, pervios_callback))
+        return
+
+    if theme_file_url:
+        file = await create_file(theme_file_url)
+
+        if not file or not theme_text:
+            await call.message.answer("Произошла ошибка. Повторите попытку позже", reply_markup=back_buttons(pervios_callback))
+            return
+        
+        await call.message.answer_document(file, caption=f"<b>{theme_name}</b>\n\n{f'{theme_text[:800]}...'}\n\n<b>Подробнее в прикрепленом файле</b>", reply_markup=back_buttons(pervios_callback))
+        return
+
+    if not theme_text:
+        await call.message.answer("Произошла ошибка. Повторите попытку позже", reply_markup=back_buttons(pervios_callback))
+        return
+    
+    await call.message.answer(text=f"<b>{theme_name}</b>\n\n{theme_text[:4000]}", reply_markup=back_buttons(pervios_callback))
+

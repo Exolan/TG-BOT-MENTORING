@@ -15,13 +15,13 @@ async def main_keyboard(db: Database):
     
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
-def back_buttons(previous_step: str = None):
+def back_buttons(callback_data: str = None):
     buttons = []
 
-    if previous_step:
-        buttons.append(InlineKeyboardButton(text="Назад", callback_data=previous_step))
+    if callback_data:
+        buttons.append(InlineKeyboardButton(text="Назад", callback_data=callback_data))
 
-    buttons.append(InlineKeyboardButton(text="Главное меню", callback_data="back_to_menu"))
+    buttons.append(InlineKeyboardButton(text="Главное меню", callback_data="menu"))
 
     return InlineKeyboardMarkup(inline_keyboard=[buttons])
 

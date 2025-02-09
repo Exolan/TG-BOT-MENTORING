@@ -1,16 +1,15 @@
 from aiogram import Bot
-from aiogram.types import Message, FSInputFile
-from keyboards import back_buttons
+from aiogram.types import FSInputFile
 import os
+from config import DOWNLOADS_DIR
 
 async def delete_old_mes(bot: Bot, chat_id: int, message_id: int):
     await bot.delete_message(chat_id=chat_id, message_id=message_id)
 
-async def create_file(message: Message, theme_file_url: str, pervios_callback: str):
-    if os.path.exists(theme_file_url):
-        file = FSInputFile(theme_file_url)
-        
-        await message.answer_document(file, caption="Подробнее в этом файле", reply_markup=back_buttons(pervios_callback))
+async def create_file(theme_file_url: str):
+    path = f'{DOWNLOADS_DIR}/{theme_file_url}'
 
-    else:
-        await message.answer(f"Произошла ошибка. Повторите попытку позже", reply_markup=back_buttons(pervios_callback))
+    if os.path.exists(path):
+        file = FSInputFile(path)
+
+        return file

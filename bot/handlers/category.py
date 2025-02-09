@@ -20,7 +20,8 @@ async def select_category(call: CallbackQuery, db: Database, state: FSMContext, 
 
     await state.update_data(select_category = category_id)
 
-    themes = await db.fetch_all(f"SELECT * FROM themes WHERE category_id = {category_id}")
+    try:
+        themes = await db.fetch_all(f"SELECT * FROM themes WHERE category_id = {category_id}")
 
         if themes:
             await call.message.answer("Выберите тему", reply_markup=select_buttons(list=themes, isTheme=True))
