@@ -4,4 +4,3 @@ venv/
 *.docx
 *.pyc
 __pycache__/
-config.py
