@@ -15,17 +15,17 @@ async def main_keyboard(db: Database):
     
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
-def back_buttons(callback_data: str = None):
+def back_buttons(previous_step: str = None):
     buttons = []
 
-    if callback_data:
-        buttons.append(InlineKeyboardButton(text="Назад", callback_data=callback_data))
+    if previous_step:
+        buttons.append(InlineKeyboardButton(text="Назад", callback_data=previous_step))
 
-    buttons.append(InlineKeyboardButton(text="Главное меню", callback_data="menu"))
+    buttons.append(InlineKeyboardButton(text="Главное меню", callback_data="back_to_menu"))
 
     return InlineKeyboardMarkup(inline_keyboard=[buttons])
 
-def select_buttons(list: list, isTheme: bool):
+def select_buttons(list: list, isTheme: bool, previous_step: str = None):
     buttons = []
 
     if list:
@@ -42,6 +42,9 @@ def select_buttons(list: list, isTheme: bool):
 
                 buttons.append([InlineKeyboardButton(text=element_name, callback_data=f'select_subtheme_{element_id}')])
     
-    buttons.append([InlineKeyboardButton(text="Назад", callback_data='back')])
+    if previous_step:
+        buttons.append([InlineKeyboardButton(text="Назад", callback_data=previous_step)])
+        
+    buttons.append([InlineKeyboardButton(text="Главное меню", callback_data='back_to_menu')])
     
     return InlineKeyboardMarkup(inline_keyboard=buttons)

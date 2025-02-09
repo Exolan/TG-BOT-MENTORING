@@ -10,7 +10,7 @@ async def create_file(message: Message, theme_file_url: str):
     if os.path.exists(theme_file_url):
         file = FSInputFile(theme_file_url)
         
-        await message.answer_document(file, caption="Подробнее в этом файле", reply_markup=back_buttons())
+        await message.answer_document(file, caption="Подробнее в этом файле")
 
     else:
-        await message.answer(f"Произошла ошибка. Повторите попытку позже", reply_markup=back_buttons())
+        await message.answer(f"Произошла ошибка. Повторите попытку позже")

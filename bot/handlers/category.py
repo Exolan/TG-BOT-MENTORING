@@ -16,9 +16,18 @@ async def select_category(call: CallbackQuery, db: Database, bot: Bot):
 
     category_id = callback_data.split("_")[2]
 
-    themes = await db.fetch_all(f"SELECT * FROM themes WHERE category_id = {category_id}")
+    try:
+        themes = await db.fetch_all(f"SELECT * FROM themes WHERE category_id = {category_id}")
 
-    if len(themes) == 0:
-        await call.message.answer(f"В этой категории пока нет тем", reply_markup=back_buttons())
-    else:
-        await call.message.answer("Выберите тему", reply_markup=select_buttons(themes, True))
+        if themes:
+            await call.message.answer("Выберите тему", reply_markup=select_buttons(list=themes, isTheme=True))
+        else:
+            await call.message.answer(f"В этой категории пока нет тем", reply_markup=back_buttons())
+    
+    except ValueError as e:
+        await call.message.answer(f"Ошибка обработки данных. Попробуйте позже", reply_markup=back_buttons())
+        print(f"Ошибка обработки данных: {e}")
+
+    except Exception as e:
+        await call.message.answer(f"Произошла ошибка. Попробуйте позже", reply_markup=back_buttons())
+        print(f"Ошибка: {e}")

@@ -9,7 +9,7 @@ from utils import delete_old_mes, create_file
 theme_router = Router()
 
 @theme_router.callback_query(lambda call: call.data.startswith("select_theme_"))
-async def select_theme(call: CallbackQuery, db: Database, previous_callback_data: str):
+async def select_theme(call: CallbackQuery, db: Database):
     await call.message.delete()
 
     theme_id = call.data.split("_")[2]
@@ -23,10 +23,12 @@ async def select_theme(call: CallbackQuery, db: Database, previous_callback_data
     theme_file_url = theme["theme_file_url"]
 
     if theme_text:
-        await call.message.answer(f"<b>{theme_name}</b>\n\n{theme_text}", reply_markup=back_buttons(previous_callback_data))
+        await call.message.answer(f"<b>{theme_name}</b>\n\n{theme_text}")
 
     if theme_file_url:
         await create_file(call.message, theme_file_url)
 
     if subtheme:
-        await call.message.answer("Выберите подтему", reply_markup=select_buttons(subtheme, False))
+        await call.message.answer("Выберите подтему", reply_markup=select_buttons(subtheme, False, f'back_to_themes_{theme_id}'))
+
+    await call.message.answer("Выберите действие", reply_markup=back_buttons(f'back_to_themes_{theme_id}'))

@@ -9,7 +9,7 @@ from utils import delete_old_mes, create_file
 subtheme_router = Router()
 
 @subtheme_router.callback_query(lambda call: call.data.startswith("select_subtheme_"))
-async def select_theme(call: CallbackQuery, db: Database, previous_callback_data: str):
+async def select_theme(call: CallbackQuery, db: Database):
     await call.message.delete()
 
     subtheme_id = call.data.split("_")[2]
@@ -19,9 +19,10 @@ async def select_theme(call: CallbackQuery, db: Database, previous_callback_data
     subtheme_name = subtheme["subtheme_name"]
     subtheme_text = subtheme["subtheme_text"]
     subtheme_file_url = subtheme["subtheme_file_url"]
+    theme_id = subtheme["theme_id"]
 
     if subtheme_text:
-        await call.message.answer(f"<b>{subtheme_name}</b>\n\n{subtheme_text}", reply_markup=back_buttons(previous_callback_data))
+        await call.message.answer(f"<b>{subtheme_name}</b>\n\n{subtheme_text}", reply_markup=back_buttons(f'back_to_themes_{theme_id}'))
 
     if subtheme_file_url:
         await create_file(call.message, subtheme_file_url)
