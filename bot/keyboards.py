@@ -1,4 +1,4 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup, Message
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from database import Database
 
 async def main_keyboard(db: Database):
@@ -11,7 +11,14 @@ async def main_keyboard(db: Database):
             category_id = category['category_id']
             category_text = category['category_name']
 
-            buttons.append([InlineKeyboardButton(text=category_text, callback_data=f'select_category_{category_id}')])
+            themes = await db.fetch_all(f"SELECT * FROM themes WHERE category_id = {category_id}")
+
+            callback = f'select_category_{category_id}'
+
+            if len(themes) == 1:
+                callback = f'select_theme_{themes[0]["theme_id"]}'
+
+            buttons.append([InlineKeyboardButton(text=category_text, callback_data=callback)])
     
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 

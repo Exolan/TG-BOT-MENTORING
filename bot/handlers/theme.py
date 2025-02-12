@@ -1,11 +1,9 @@
 from aiogram import Router
-from aiogram.types import Message, CallbackQuery
-from aiogram.filters import Command
+from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
-from keyboards import main_keyboard, back_buttons, select_buttons
+from keyboards import back_buttons, select_buttons
 from database import Database
-from aiogram import Bot
-from utils import delete_old_mes, create_file
+from utils import create_file
 from states import MenuState
 
 theme_router = Router()
@@ -16,9 +14,21 @@ async def select_theme(call: CallbackQuery, state: FSMContext, db: Database):
 
     theme_id = call.data.split("_")[2]
 
-    await state.set_state(MenuState.select_category)
+    data = await state.get_data()
+    search_text = data.get("search_text")
 
-    await state.update_data(select_theme = theme_id)
+    if search_text:
+        pervios_callback = "search_results"
+    else:
+        await state.set_state(MenuState.select_category)
+
+        category = data.get('select_category')
+
+        if category:
+            await state.update_data(select_theme = theme_id)
+            pervios_callback = "select_category_" + category
+        else:
+            pervios_callback = None
 
 
     theme = await db.fetch_one(f"SELECT * FROM themes WHERE theme_id = {theme_id}")
@@ -28,10 +38,6 @@ async def select_theme(call: CallbackQuery, state: FSMContext, db: Database):
     theme_name = theme["theme_name"]
     theme_text = theme["theme_text"]
     theme_file_url = theme["theme_file_url"]
-
-    data = await state.get_data()
-
-    pervios_callback = "select_category_" + data.get('select_category')
 
     if subtheme:
         await call.message.answer("Выберите подтему", reply_markup=select_buttons(subtheme, False, pervios_callback))

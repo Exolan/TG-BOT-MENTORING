@@ -2,7 +2,7 @@ import json
 import asyncio
 import aiomysql
 from sentence_transformers import SentenceTransformer
-from config import DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER
+from config import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER
 
 # Загружаем модель
 model = SentenceTransformer("all-MiniLM-L6-v2")

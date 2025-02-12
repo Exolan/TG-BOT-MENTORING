@@ -1,18 +1,17 @@
 from aiogram import Router
-from aiogram.types import Message, CallbackQuery
-from aiogram.filters import Command
+from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
-from keyboards import main_keyboard, back_buttons, select_buttons
+from keyboards import back_buttons, select_buttons
 from database import Database
-from aiogram import Bot
-from utils import delete_old_mes, create_file
 from states import MenuState
 
 category_router = Router()
 
 @category_router.callback_query(lambda call: call.data.startswith("select_category_"))
-async def select_category(call: CallbackQuery, db: Database, state: FSMContext, bot: Bot):
+async def select_category(call: CallbackQuery, db: Database, state: FSMContext,):
     await call.message.delete()
+    await state.set_state(MenuState.select_category)
+    await state.clear()
 
     callback_data = call.data
 

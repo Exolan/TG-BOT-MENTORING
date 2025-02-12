@@ -1,12 +1,10 @@
 from aiogram import Router
-from aiogram.types import Message, CallbackQuery
-from aiogram.filters import Command
+from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
 from states import MenuState
-from keyboards import main_keyboard, back_buttons, select_buttons
+from keyboards import back_buttons
 from database import Database
-from aiogram import Bot
-from utils import delete_old_mes, create_file
+from utils import create_file
 
 subtheme_router = Router()
 
@@ -14,7 +12,15 @@ subtheme_router = Router()
 async def select_theme(call: CallbackQuery, state: FSMContext, db: Database):
     await call.message.delete()
 
-    await state.set_state(MenuState.select_theme)
+    data = await state.get_data()
+    search_text = data.get("search_text")
+
+    if search_text:
+        pervios_callback = "search_results"
+    else:
+        await state.set_state(MenuState.select_theme)
+        data = await state.get_data()
+        pervios_callback = "select_theme_" + data.get("select_theme")
 
     subtheme_id = call.data.split("_")[2]
 
@@ -24,12 +30,8 @@ async def select_theme(call: CallbackQuery, state: FSMContext, db: Database):
     subtheme_text = subtheme["subtheme_text"]
     subtheme_file_url = subtheme["subtheme_file_url"]
 
-    data = await state.get_data()
-
-    previous_callback = "select_theme_" + data.get("select_theme")
-
     if subtheme_text:
-        await call.message.answer(f"<b>{subtheme_name}</b>\n\n{subtheme_text}", reply_markup=back_buttons(previous_callback))
+        await call.message.answer(f"<b>{subtheme_name}</b>\n\n{subtheme_text}", reply_markup=back_buttons(pervios_callback))
 
     if subtheme_file_url:
-        await create_file(call.message, subtheme_file_url, previous_callback)
+        await create_file(call.message, subtheme_file_url, pervios_callback)

@@ -1,5 +1,5 @@
 from aiogram import BaseMiddleware
-from aiogram.types import TelegramObject, Message
+from aiogram.types import TelegramObject
 from aiogram import Bot
 
 class BotMiddleware(BaseMiddleware):

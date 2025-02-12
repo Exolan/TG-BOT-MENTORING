@@ -4,7 +4,7 @@ import os
 from config import DOWNLOADS_DIR
 
 async def delete_old_mes(bot: Bot, chat_id: int, message_id: int):
-    await bot.delete_message(chat_id=chat_id, message_id=message_id)
+    await bot.delete_message(chat_id=chat_id, message_id=message_id-1)
 
 async def create_file(theme_file_url: str):
     path = f'{DOWNLOADS_DIR}/{theme_file_url}'
