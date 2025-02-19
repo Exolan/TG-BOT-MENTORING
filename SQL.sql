@@ -23,7 +23,7 @@ create table subthemes (
 	subtheme_id int primary key auto_increment,
     theme_id int not null,
     subtheme_name varchar(100) not null,
-    subtheme_text text not null,
+    subtheme_text text null,
     subtheme_vector json null,
     subtheme_file_url text null,
     FOREIGN KEY (theme_id) REFERENCES themes(theme_id)

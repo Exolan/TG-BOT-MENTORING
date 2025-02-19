@@ -53,14 +53,14 @@ async def search_info(message: Message, state: FSMContext, bot: Bot, db: Databas
             theme_vector = json.loads(theme["theme_vector"])  # Декодируем JSON в массив
             similarity = 1 - cosine(query_vector, theme_vector)  # Косинусное сходство
 
-            if similarity > 0.5:
+            if similarity > 0.3:
                 similarities.append((theme["theme_name"], similarity, f'select_theme_{theme["theme_id"]}'))  # Добавляем в список
 
         for subtheme in subthemes:
             subtheme_vector = json.loads(subtheme["subtheme_vector"])  # Декодируем JSON в массив
             similarity = 1 - cosine(query_vector, subtheme_vector)  # Косинусное сходство
 
-            if similarity > 0.5:
+            if similarity > 0.3:
                 similarities.append((subtheme["subtheme_name"], similarity, f'select_subtheme_{subtheme["subtheme_id"]}'))  # Добавляем в список
 
         if len(similarities) == 0:

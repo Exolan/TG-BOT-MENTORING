@@ -47,14 +47,14 @@ async def select_theme(call: CallbackQuery, state: FSMContext, db: Database):
         file = await create_file(theme_file_url)
 
         if not file or not theme_text:
-            await call.message.answer("Произошла ошибка. Повторите попытку позже", reply_markup=back_buttons(pervios_callback))
+            await call.message.answer("Эта тема еще не загружена. Повторите попытку позже", reply_markup=back_buttons(pervios_callback))
             return
         
         await call.message.answer_document(file, caption=f"<b>{theme_name}</b>\n\n{f'{theme_text[:800]}...'}\n\n<b>Подробнее в прикрепленом файле</b>", reply_markup=back_buttons(pervios_callback))
         return
 
     if not theme_text:
-        await call.message.answer("Произошла ошибка. Повторите попытку позже", reply_markup=back_buttons(pervios_callback))
+        await call.message.answer("Эта тема еще не загружена. Повторите попытку позже", reply_markup=back_buttons(pervios_callback))
         return
     
     await call.message.answer(text=f"<b>{theme_name}</b>\n\n{theme_text[:4000]}", reply_markup=back_buttons(pervios_callback))
