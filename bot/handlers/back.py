@@ -11,4 +11,4 @@ async def back_command(call: CallbackQuery, state: FSMContext, db: Database):
     await state.clear()
     
     await call.message.delete()
-    await call.message.answer("Вы вернулись назад", reply_markup=await main_keyboard(db))
+    await call.message.answer("🏃 Вы вернулись назад", reply_markup=await main_keyboard(db))

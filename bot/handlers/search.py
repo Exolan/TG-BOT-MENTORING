@@ -27,7 +27,7 @@ async def search_info(message: Message, state: FSMContext, bot: Bot, db: Databas
         search_text = message.text.strip()
 
     if len(search_text) < 5:
-        await message.answer("Я вас не понимаю. Напишите более подробно", reply_markup=back_buttons())
+        await message.answer("🤔 Я вас не понимаю. Напишите более подробно", reply_markup=back_buttons())
         return
 
     try:
@@ -43,7 +43,7 @@ async def search_info(message: Message, state: FSMContext, bot: Bot, db: Databas
         subthemes = await db.fetch_all(query_subthemes)
 
         if not themes and not subthemes:
-            await message.answer("Я ничего не нашел", reply_markup=back_buttons())
+            await message.answer("😕 Я ничего не нашел", reply_markup=back_buttons())
             return
 
             # Вычисляем косинусное сходство запроса с каждой темой
@@ -64,7 +64,7 @@ async def search_info(message: Message, state: FSMContext, bot: Bot, db: Databas
                 similarities.append((subtheme["subtheme_name"], similarity, f'select_subtheme_{subtheme["subtheme_id"]}'))  # Добавляем в список
 
         if len(similarities) == 0:
-            await message.answer("Я ничего не нашел", reply_markup=back_buttons())
+            await message.answer("😕 Я ничего не нашел", reply_markup=back_buttons())
             return
         
         # Сортируем темы по убыванию схожести
@@ -83,7 +83,7 @@ async def search_info(message: Message, state: FSMContext, bot: Bot, db: Databas
         await state.update_data(search_text=search_text)
 
     except Exception as e:
-        await message.answer("Произошла ошибка. Попробуйте позже", reply_markup=back_buttons())
+        await message.answer("⚠ Произошла ошибка. Попробуйте позже", reply_markup=back_buttons())
         print(f"Ошибка поиска: {e}")
 
 @search_router.callback_query(lambda call: call.data == "search_results")
@@ -94,7 +94,7 @@ async def return_to_search(call: CallbackQuery, state: FSMContext, bot: Bot, db:
     search_text = data.get("search_text")
 
     if not search_text:
-        await call.message.answer("Ошибка. Повторите поиск позже", reply_markup=back_buttons())
+        await call.message.answer("⚠ Ошибка. Повторите поиск позже", reply_markup=back_buttons())
         return
     
     await search_info(call.message, state, bot, db)

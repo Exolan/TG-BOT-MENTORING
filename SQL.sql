@@ -16,6 +16,7 @@ create table themes (
     theme_text text null,
     theme_vector json null,
     theme_file_url text null,
+    theme_image varchar(100) null,
     FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
 

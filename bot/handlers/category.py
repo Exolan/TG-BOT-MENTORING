@@ -4,6 +4,7 @@ from aiogram.fsm.context import FSMContext
 from keyboards import back_buttons, select_buttons
 from database import Database
 from states import MenuState
+from utils import open_image
 
 category_router = Router()
 
@@ -23,9 +24,22 @@ async def select_category(call: CallbackQuery, db: Database, state: FSMContext,)
         themes = await db.fetch_all(f"SELECT * FROM themes WHERE category_id = {category_id}")
 
         if themes:
-            await call.message.answer("Выберите тему", reply_markup=select_buttons(list=themes, isTheme=True))
+            image = await open_image(category_id)
+
+            if image:
+                await call.message.answer_photo(
+                    photo=image, 
+                    caption="🎯 <b>Выберите тему:</b>", 
+                    reply_markup=select_buttons(list=themes, isTheme=True)
+                )
+                return
+            
+            await call.message.answer("🎯 <b>Выберите тему:</b>", reply_markup=select_buttons(list=themes, isTheme=True))
         else:
-            await call.message.answer(f"В этой категории пока нет тем", reply_markup=back_buttons())
+            await call.message.answer(
+                "⚠ <b>В этой категории пока нет тем</b>", 
+                reply_markup=back_buttons()
+            )
     
     except ValueError as e:
         await call.message.answer(f"Ошибка обработки данных. Попробуйте позже", reply_markup=back_buttons())

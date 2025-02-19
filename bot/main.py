@@ -6,7 +6,6 @@ from database import Database
 from config import BOT_TOKEN, DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER
 
 from handlers.start import start_router
-from handlers.help import help_router
 from handlers.category import category_router
 from handlers.back import menu_router
 from handlers.theme import theme_router
@@ -38,7 +37,6 @@ async def main():
         dp.update.middleware(BotMiddleware(bot))
         
         dp.include_router(start_router)
-        dp.include_router(help_router)
         dp.include_router(category_router)
         dp.include_router(menu_router)
         dp.include_router(theme_router)

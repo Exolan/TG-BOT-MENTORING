@@ -3,7 +3,7 @@ from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
 from keyboards import back_buttons, select_buttons
 from database import Database
-from utils import create_file
+from utils import create_file, open_image
 from states import MenuState
 
 theme_router = Router()
@@ -38,24 +38,32 @@ async def select_theme(call: CallbackQuery, state: FSMContext, db: Database):
     theme_name = theme["theme_name"]
     theme_text = theme["theme_text"]
     theme_file_url = theme["theme_file_url"]
+    theme_image = theme["theme_image"]
 
     if subtheme:
-        await call.message.answer("Выберите подтему", reply_markup=select_buttons(subtheme, False, pervios_callback))
+        await call.message.answer("📌 Выберите подтему", reply_markup=select_buttons(subtheme, False, pervios_callback))
         return
 
     if theme_file_url:
         file = await create_file(theme_file_url)
 
         if not file or not theme_text:
-            await call.message.answer("Эта тема еще не загружена. Повторите попытку позже", reply_markup=back_buttons(pervios_callback))
+            await call.message.answer("⚠ Эта тема еще не загружена. Повторите попытку позже", reply_markup=back_buttons(pervios_callback))
             return
         
-        await call.message.answer_document(file, caption=f"<b>{theme_name}</b>\n\n{f'{theme_text[:800]}...'}\n\n<b>Подробнее в прикрепленом файле</b>", reply_markup=back_buttons(pervios_callback))
+        await call.message.answer_document(file, caption=f"<b>{theme_name}</b>\n\n{f'{theme_text[:800]}...'}\n\n <b>Подробнее в прикрепленом файле</b>", reply_markup=back_buttons(pervios_callback))
         return
 
     if not theme_text:
-        await call.message.answer("Эта тема еще не загружена. Повторите попытку позже", reply_markup=back_buttons(pervios_callback))
+        await call.message.answer("⚠ Эта тема еще не загружена. Повторите попытку позже", reply_markup=back_buttons(pervios_callback))
         return
     
+    if theme_image:
+        image = await open_image(theme_image)
+
+        if image:
+            await call.message.answer_photo(photo=image, caption = f"<b>{theme_name}</b>\n\n{theme_text[:950]}", reply_markup=back_buttons(pervios_callback))
+            return
+
     await call.message.answer(text=f"<b>{theme_name}</b>\n\n{theme_text[:4000]}", reply_markup=back_buttons(pervios_callback))
 
